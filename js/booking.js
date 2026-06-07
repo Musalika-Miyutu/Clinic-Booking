@@ -1,36 +1,48 @@
 let selectedDate = null;
-let selectedSlot = null;
+let selectedSlot = null; // { id, time }
 let currentMonth, currentYear;
+let availableDatesInMonth = new Set();
 
-const slotsByDay = {
-  1: ['08:00','09:00','10:30','14:00','15:30'],
-  2: ['09:00','11:00','13:00','16:00'],
-  3: ['08:30','10:00','11:30','14:30'],
-  4: ['09:30','10:30','13:30','15:00','16:30'],
-  5: ['08:00','09:00','10:00','14:00','15:00','16:00'],
-};
-
-function initBooking() {
+async function initBooking() {
   const now = new Date();
   currentMonth = now.getMonth();
-  currentYear = now.getFullYear();
-  renderCalendar(currentMonth, currentYear);
+  currentYear  = now.getFullYear();
+  selectedDate = null;
+  selectedSlot = null;
+  updateBookingSummary();
   renderBookingDoctor();
+  await fetchMonthSlots(currentMonth, currentYear);
+  renderCalendar(currentMonth, currentYear);
 }
 
 function renderBookingDoctor() {
-  const doctor = App.doctors.find(d => d.id === App.selectedDoctorId) || App.doctors[0];
+  const doctor = App.doctors.find(d => d.id === App.selectedDoctorId);
   const wrap = document.getElementById('booking-doctor-info');
-  if (!wrap || !doctor) return;
+  if (!wrap) return;
+  if (!doctor) {
+    wrap.innerHTML = `<p style="color:var(--slate)">No doctor selected — <a style="color:var(--teal);cursor:pointer" onclick="showPage('doctors')">choose one</a></p>`;
+    return;
+  }
+  const spec = doctor.specialisations?.name || 'General';
   wrap.innerHTML = `
     <div style="display:flex;align-items:center;gap:16px">
-      <div class="doctor-avatar" style="background:${doctor.color};width:52px;height:52px;font-size:18px">${doctor.initials}</div>
+      <div class="doctor-avatar" style="background:${doctor.avatar_color || 'var(--teal)'};width:52px;height:52px;font-size:18px">${doctor.avatar_initials || '?'}</div>
       <div>
-        <h3 style="font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--navy)">${doctor.name}</h3>
-        <p style="color:var(--teal);font-size:13px;font-weight:600">${doctor.specialty}</p>
-        <p style="color:var(--slate);font-size:12px">${doctor.exp} experience · ${doctor.rating}★</p>
+        <h3 style="font-family:var(--font-display);font-size:17px;font-weight:700">${doctor.full_name}</h3>
+        <p style="color:var(--teal);font-size:13px;font-weight:600">${spec}</p>
+        <p style="color:var(--slate);font-size:12px">${doctor.experience_years || '?'} yrs exp · ${doctor.rating || 4.5}★</p>
       </div>
+      <button class="btn btn-secondary btn-sm" style="margin-left:auto" onclick="showPage('doctors')">Change</button>
     </div>`;
+}
+
+async function fetchMonthSlots(month, year) {
+  availableDatesInMonth = new Set();
+  if (!App.selectedDoctorId) return;
+  try {
+    const slots = await DB.getSlotsByMonth(App.selectedDoctorId, year, month);
+    slots.forEach(s => availableDatesInMonth.add(s.slot_date));
+  } catch(e) { console.error('Slot fetch error:', e); }
 }
 
 function renderCalendar(month, year) {
@@ -38,14 +50,14 @@ function renderCalendar(month, year) {
                   'July','August','September','October','November','December'];
   document.getElementById('cal-month-label').textContent = `${months[month]} ${year}`;
 
-  const firstDay = new Date(year, month, 1).getDay();
+  const firstDay    = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const today = new Date();
+  const today       = new Date();
+  today.setHours(0,0,0,0);
 
   const grid = document.getElementById('cal-days-grid');
   grid.innerHTML = '';
 
-  // Empty cells
   for (let i = 0; i < firstDay; i++) {
     const el = document.createElement('div');
     el.className = 'cal-day empty';
@@ -58,56 +70,66 @@ function renderCalendar(month, year) {
     el.textContent = d;
 
     const thisDate = new Date(year, month, d);
-    const isPast = thisDate < today && !(thisDate.toDateString() === today.toDateString());
-    const dayOfWeek = thisDate.getDay();
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+    thisDate.setHours(0,0,0,0);
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isPast  = thisDate < today;
+    const isToday = thisDate.getTime() === today.getTime();
 
-    if (isPast || isWeekend) { el.classList.add('past'); }
-    else {
-      if (slotsByDay[d % 5 + 1]) el.classList.add('has-slots');
-      el.addEventListener('click', () => selectDay(d, month, year, el));
+    if (isToday) el.classList.add('today');
+
+    if (isPast) {
+      el.classList.add('past');
+    } else {
+      if (availableDatesInMonth.has(dateStr)) el.classList.add('has-slots');
+      el.addEventListener('click', () => selectDay(dateStr, el));
     }
 
-    if (thisDate.toDateString() === today.toDateString()) el.classList.add('today');
-
-    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     if (selectedDate === dateStr) el.classList.add('selected');
-
     grid.appendChild(el);
   }
 
   clearSlots();
 }
 
-function selectDay(day, month, year, el) {
+async function selectDay(dateStr, el) {
   document.querySelectorAll('.cal-day').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
-  selectedDate = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  selectedDate = dateStr;
   selectedSlot = null;
-  renderSlots(day);
   updateBookingSummary();
+  await renderSlots(dateStr);
 }
 
-function renderSlots(day) {
-  const slots = slotsByDay[day % 5 + 1] || ['09:00','10:00','11:00'];
-  const bookedIdx = [1]; // simulate one booked slot
+async function renderSlots(dateStr) {
   const wrap = document.getElementById('time-slots-wrap');
-  wrap.innerHTML = '';
-  slots.forEach((time, i) => {
-    const div = document.createElement('div');
-    div.className = 'time-slot' + (bookedIdx.includes(i) ? ' booked' : '');
-    div.textContent = time;
-    if (!bookedIdx.includes(i)) {
+  const section = document.getElementById('slots-section');
+  wrap.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--slate);font-size:13px">Loading slots…</div>`;
+  section.style.display = 'block';
+
+  try {
+    const slots = await DB.getAvailableSlots(App.selectedDoctorId, dateStr);
+    wrap.innerHTML = '';
+
+    if (slots.length === 0) {
+      wrap.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:16px;color:var(--slate);font-size:13px">No available slots for this date.</div>`;
+      return;
+    }
+
+    slots.forEach(slot => {
+      const div = document.createElement('div');
+      div.className = 'time-slot';
+      div.textContent = slot.slot_time.slice(0,5);
       div.addEventListener('click', () => {
         document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
         div.classList.add('selected');
-        selectedSlot = time;
+        selectedSlot = { id: slot.id, time: slot.slot_time.slice(0,5) };
         updateBookingSummary();
       });
-    }
-    wrap.appendChild(div);
-  });
-  document.getElementById('slots-section').style.display = 'block';
+      wrap.appendChild(div);
+    });
+  } catch(e) {
+    wrap.innerHTML = `<div style="grid-column:1/-1;color:var(--danger);font-size:13px">Failed to load slots: ${e.message}</div>`;
+  }
 }
 
 function clearSlots() {
@@ -122,51 +144,61 @@ function updateBookingSummary() {
   if (!el) return;
   if (selectedDate && selectedSlot) {
     el.style.display = 'block';
-    document.getElementById('summary-date').textContent = formatDate(selectedDate);
-    document.getElementById('summary-time').textContent = selectedSlot;
-    const doc = App.doctors.find(d => d.id === App.selectedDoctorId) || App.doctors[0];
-    document.getElementById('summary-doctor').textContent = doc.name;
-    document.getElementById('summary-specialty').textContent = doc.specialty;
+    document.getElementById('summary-date').textContent    = formatDate(selectedDate);
+    document.getElementById('summary-time').textContent    = selectedSlot.time;
+    const doc = App.doctors.find(d => d.id === App.selectedDoctorId);
+    document.getElementById('summary-doctor').textContent  = doc?.full_name || '—';
+    document.getElementById('summary-specialty').textContent = doc?.specialisations?.name || '—';
   } else {
     el.style.display = 'none';
   }
 }
 
-function prevMonth() {
+window.prevMonth = async function() {
   currentMonth--;
   if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  await fetchMonthSlots(currentMonth, currentYear);
   renderCalendar(currentMonth, currentYear);
 }
 
-function nextMonth() {
+window.nextMonth = async function() {
   currentMonth++;
   if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  await fetchMonthSlots(currentMonth, currentYear);
   renderCalendar(currentMonth, currentYear);
 }
 
-function confirmBooking() {
-  if (!selectedDate || !selectedSlot) {
-    showToast('Please select a date and time slot', 'error');
-    return;
-  }
-  const type = document.getElementById('booking-type')?.value || 'Consultation';
+window.confirmBooking = async function() {
+  if (!App.selectedDoctorId) { showToast('Please select a doctor first', 'error'); showPage('doctors'); return; }
+  if (!selectedDate)         { showToast('Please select a date', 'error'); return; }
+  if (!selectedSlot)         { showToast('Please select a time slot', 'error'); return; }
+
+  const type  = document.getElementById('booking-type')?.value || 'Consultation';
   const notes = document.getElementById('booking-notes')?.value || '';
-  const doc = App.doctors.find(d => d.id === App.selectedDoctorId) || App.doctors[0];
+  const btn   = document.getElementById('confirm-booking-btn');
 
-  App.appointments.push({
-    id: 'a' + Date.now(),
-    patientName: App.currentUser.name,
-    doctor: doc.name,
-    specialty: doc.specialty,
-    date: selectedDate,
-    time: selectedSlot,
-    status: 'pending',
-    type,
-    notes
-  });
+  btn.textContent = 'Booking…';
+  btn.disabled = true;
 
-  showToast(`Appointment booked with ${doc.name} on ${formatDate(selectedDate)} at ${selectedSlot}`, 'success');
-  selectedDate = null;
-  selectedSlot = null;
-  setTimeout(() => showPage('appointments'), 1200);
+  try {
+    await DB.createAppointment({
+      patientId: App.currentUser.id,
+      doctorId:  App.selectedDoctorId,
+      slotId:    selectedSlot.id,
+      date:      selectedDate,
+      time:      selectedSlot.time,
+      type, notes
+    });
+
+    const doc = App.doctors.find(d => d.id === App.selectedDoctorId);
+    showToast(`Appointment booked with ${doc?.full_name} on ${formatDate(selectedDate)} at ${selectedSlot.time}`, 'success');
+
+    selectedDate = null;
+    selectedSlot = null;
+    setTimeout(() => showPage('appointments'), 1200);
+  } catch(e) {
+    showToast(e.message || 'Booking failed. Please try again.', 'error');
+    btn.textContent = 'Confirm Booking';
+    btn.disabled = false;
+  }
 }

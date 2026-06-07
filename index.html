@@ -5,10 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MediBook — Clinic Appointment System</title>
   <link rel="stylesheet" href="css/main.css" />
+  <style>
+    /* Hide app until auth check completes — prevents dashboard flash */
+    .app-shell { visibility: hidden; }
+  </style>
+  <style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
 
-<!-- ═══════════════════════ APP SHELL ═══════════════════════ -->
 <div class="app-shell">
 
   <!-- ─────────── SIDEBAR ─────────── -->
@@ -25,73 +31,41 @@
 
     <nav class="sidebar-nav">
       <div class="nav-section-label">Main</div>
-
-      <div class="nav-item active" data-page="dashboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-          <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-        </svg>
+      <div class="nav-item" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
         Dashboard
       </div>
-
       <div class="nav-item" data-page="doctors">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Find Doctors
       </div>
-
       <div class="nav-item" data-page="booking">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="4" width="18" height="18" rx="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
-          <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Book Appointment
       </div>
-
       <div class="nav-item" data-page="appointments">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-          <polyline points="10 9 9 9 8 9"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         My Appointments
-        <span class="nav-badge">2</span>
       </div>
 
       <div class="nav-section-label" style="margin-top:16px">Account</div>
-
       <div class="nav-item" data-page="profile">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         My Profile
       </div>
-
       <div class="nav-item" data-page="settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.07 4.93A10 10 0 1 0 4.93 19.07M19.07 4.93l-2.83 2.83M4.93 4.93l2.83 2.83"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 1 0 4.93 19.07"/></svg>
         Settings
       </div>
     </nav>
 
-    <!-- User footer -->
     <div class="sidebar-user">
-      <div class="user-avatar" id="sidebar-initials">MJM</div>
+      <div class="user-avatar" id="sidebar-initials">…</div>
       <div class="user-info">
-        <h4 id="sidebar-username">Musalika James Miyutu</h4>
+        <h4 id="sidebar-username">Loading…</h4>
         <p id="sidebar-role">Patient</p>
       </div>
-      <button class="logout-btn" onclick="showToast('Logged out','info')" title="Logout">
+      <button class="logout-btn" id="logout-btn" title="Logout">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
@@ -103,207 +77,122 @@
   <!-- ─────────── MAIN CONTENT ─────────── -->
   <main class="main-content">
 
-    <!-- ═══ PAGE: DASHBOARD ═══ -->
-    <div id="page-dashboard" class="page active">
+    <!-- ═══ DASHBOARD ═══ -->
+    <div id="page-dashboard" class="page" style="display:none">
       <div class="topbar">
         <div class="topbar-left">
-          <h1>Good morning, Musalika 👋</h1>
-          <p>Here's your health overview for today, Monday 1 June 2026</p>
+          <h1 id="dashboard-greeting">Good morning 👋</h1>
+          <p>Here's your health overview</p>
         </div>
         <div class="topbar-right">
-          <button class="btn-icon" title="Notifications" style="position:relative">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-            <span class="notif-dot"></span>
-          </button>
           <button class="btn btn-primary" onclick="showPage('booking')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             New Appointment
           </button>
         </div>
       </div>
 
-      <!-- Stats -->
       <div class="stat-grid">
         <div class="stat-card teal">
           <div class="stat-icon teal">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           </div>
-          <div class="stat-value" id="stat-upcoming">2</div>
+          <div class="stat-value" id="stat-upcoming">—</div>
           <div class="stat-label">Upcoming Appointments</div>
-          <div class="stat-delta up">↑ 1 this week</div>
         </div>
         <div class="stat-card success">
           <div class="stat-icon success">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
-          <div class="stat-value" id="stat-completed">1</div>
+          <div class="stat-value" id="stat-completed">—</div>
           <div class="stat-label">Completed</div>
-          <div class="stat-delta up">↑ All time</div>
         </div>
         <div class="stat-card navy">
           <div class="stat-icon navy">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           </div>
-          <div class="stat-value" id="stat-doctors">5</div>
+          <div class="stat-value" id="stat-doctors">—</div>
           <div class="stat-label">Available Doctors</div>
-          <div class="stat-delta up">Online now</div>
         </div>
         <div class="stat-card warning">
           <div class="stat-icon warning">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
           </div>
           <div class="stat-value">98%</div>
           <div class="stat-label">Health Score</div>
-          <div class="stat-delta up">↑ Great shape</div>
         </div>
       </div>
 
-      <!-- Content grid -->
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:22px">
-
-        <!-- Recent Appointments -->
+      <div style="display:grid;grid-template-columns:1fr 320px;gap:22px">
         <div class="card">
           <div class="card-header">
-            <div>
-              <div class="card-title">Recent Appointments</div>
-              <div class="card-subtitle">Your appointment history</div>
-            </div>
+            <div><div class="card-title">Recent Appointments</div></div>
             <button class="btn btn-secondary btn-sm" onclick="showPage('appointments')">View All</button>
           </div>
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>Doctor</th><th>Specialty</th><th>Date</th><th>Time</th><th>Status</th><th></th>
-                </tr>
-              </thead>
-              <tbody id="recent-appointments-body"></tbody>
+              <thead><tr><th>Doctor</th><th>Specialty</th><th>Date</th><th>Time</th><th>Status</th><th></th></tr></thead>
+              <tbody id="recent-appointments-body"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--slate)">Loading…</td></tr></tbody>
             </table>
           </div>
         </div>
-
-        <!-- Quick Actions + Featured Doctors -->
         <div style="display:flex;flex-direction:column;gap:18px">
           <div class="card">
             <div class="card-title" style="margin-bottom:14px">Quick Actions</div>
             <div style="display:flex;flex-direction:column;gap:8px">
-              <button class="btn btn-primary" style="justify-content:center" onclick="showPage('booking')">
-                📅 Book Appointment
-              </button>
-              <button class="btn btn-secondary" style="justify-content:center" onclick="showPage('doctors')">
-                🔍 Find a Doctor
-              </button>
-              <button class="btn btn-secondary" style="justify-content:center" onclick="showPage('appointments')">
-                📋 My Records
-              </button>
+              <button class="btn btn-primary" style="justify-content:center" onclick="showPage('booking')">📅 Book Appointment</button>
+              <button class="btn btn-secondary" style="justify-content:center" onclick="showPage('doctors')">🔍 Find a Doctor</button>
+              <button class="btn btn-secondary" style="justify-content:center" onclick="showPage('appointments')">📋 My Records</button>
             </div>
           </div>
-          <div class="card" style="padding-bottom:18px">
-            <div class="card-header">
-              <div class="card-title">Top Doctors</div>
-              <button class="btn btn-ghost btn-sm" onclick="showPage('doctors')">See All</button>
-            </div>
-            <div id="featured-doctors" style="display:flex;flex-direction:column;gap:12px"></div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Top Doctors</div><button class="btn btn-ghost btn-sm" onclick="showPage('doctors')">See All</button></div>
+            <div id="featured-doctors"></div>
           </div>
         </div>
       </div>
-    </div><!-- /dashboard -->
+    </div>
 
-
-    <!-- ═══ PAGE: DOCTORS ═══ -->
+    <!-- ═══ DOCTORS ═══ -->
     <div id="page-doctors" class="page" style="display:none">
       <div class="topbar">
-        <div class="topbar-left">
-          <h1>Find a Doctor</h1>
-          <p>Browse specialists and book your appointment</p>
-        </div>
+        <div class="topbar-left"><h1>Find a Doctor</h1><p>Browse specialists and book your appointment</p></div>
       </div>
-
-      <!-- Search + filters -->
       <div class="card" style="margin-bottom:22px;padding:18px 24px">
         <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
           <div class="search-wrap" style="flex:1;min-width:220px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
             <input class="form-input" id="doctor-search" placeholder="Search by name or specialty…" />
           </div>
-          <div class="filter-chips">
+          <div class="filter-chips" id="specialty-chips">
             <div class="chip specialty-chip active" data-specialty="All">All</div>
-            <div class="chip specialty-chip" data-specialty="Cardiology">Cardiology</div>
-            <div class="chip specialty-chip" data-specialty="Neurology">Neurology</div>
-            <div class="chip specialty-chip" data-specialty="Paediatrics">Paediatrics</div>
-            <div class="chip specialty-chip" data-specialty="Orthopaedics">Orthopaedics</div>
-            <div class="chip specialty-chip" data-specialty="Dermatology">Dermatology</div>
-            <div class="chip specialty-chip" data-specialty="General Practice">General</div>
           </div>
         </div>
       </div>
-
       <div class="doctor-grid" id="doctors-grid"></div>
-    </div><!-- /doctors -->
+    </div>
 
-
-    <!-- ═══ PAGE: BOOKING ═══ -->
+    <!-- ═══ BOOKING ═══ -->
     <div id="page-booking" class="page" style="display:none">
       <div class="topbar">
-        <div class="topbar-left">
-          <h1>Book an Appointment</h1>
-          <p>Select a date, time slot, and confirm your booking</p>
-        </div>
-        <div class="topbar-right">
-          <button class="btn btn-secondary" onclick="showPage('doctors')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-              <path d="M19 12H5m7-7-7 7 7 7"/>
-            </svg>
-            Change Doctor
-          </button>
-        </div>
+        <div class="topbar-left"><h1>Book an Appointment</h1><p>Select a date, time slot, and confirm your booking</p></div>
       </div>
-
       <div style="display:grid;grid-template-columns:1fr 340px;gap:22px">
-
-        <!-- Calendar + Slots -->
         <div style="display:flex;flex-direction:column;gap:18px">
-          <!-- Doctor Info -->
           <div class="card" id="booking-doctor-info" style="padding:20px 24px"></div>
-
-          <!-- Calendar -->
           <div class="card">
             <div class="card-header">
               <div class="card-title">Select Date</div>
-              <div style="display:flex;gap:8px">
+              <div style="display:flex;gap:8px;align-items:center">
                 <button class="btn-icon" onclick="prevMonth()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
-                    <path d="M15 18l-6-6 6-6"/>
-                  </svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
                 </button>
-                <span id="cal-month-label" style="font-weight:600;font-size:14px;align-self:center;min-width:130px;text-align:center"></span>
+                <span id="cal-month-label" style="font-weight:600;font-size:14px;min-width:140px;text-align:center"></span>
                 <button class="btn-icon" onclick="nextMonth()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
-                    <path d="M9 18l6-6-6-6"/>
-                  </svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
                 </button>
               </div>
             </div>
-
-            <!-- Day headers -->
             <div class="calendar-grid" style="margin-bottom:4px">
               <div class="cal-day-header">Sun</div><div class="cal-day-header">Mon</div>
               <div class="cal-day-header">Tue</div><div class="cal-day-header">Wed</div>
@@ -312,73 +201,50 @@
             </div>
             <div class="calendar-grid" id="cal-days-grid"></div>
           </div>
-
-          <!-- Time slots -->
           <div class="card" id="slots-section" style="display:none">
             <div class="card-title" style="margin-bottom:4px">Available Time Slots</div>
-            <p style="font-size:13px;color:var(--slate);margin-bottom:12px">
-              <span style="display:inline-block;width:10px;height:10px;background:var(--teal);border-radius:50%;margin-right:5px"></span>Available &nbsp;&nbsp;
-              <span style="display:inline-block;width:10px;height:10px;background:var(--border);border-radius:50%;margin-right:5px"></span>Booked
-            </p>
+            <p style="font-size:13px;color:var(--slate);margin-bottom:12px">Tap a slot to select it</p>
             <div class="time-slots" id="time-slots-wrap"></div>
           </div>
         </div>
 
-        <!-- Booking Form + Summary -->
         <div style="display:flex;flex-direction:column;gap:18px">
           <div class="card">
             <div class="card-title" style="margin-bottom:20px">Appointment Details</div>
             <div class="form-group">
               <label class="form-label">Appointment Type</label>
               <select class="form-select" id="booking-type">
-                <option>Consultation</option>
-                <option>Follow-up</option>
-                <option>Check-up</option>
-                <option>Emergency</option>
+                <option>Consultation</option><option>Follow-up</option>
+                <option>Check-up</option><option>Emergency</option>
                 <option>Lab Results Review</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label">Notes for Doctor <span style="color:var(--slate-light)">(optional)</span></label>
-              <textarea class="form-textarea" id="booking-notes" rows="4" placeholder="Describe your symptoms or reason for visit…" style="resize:vertical"></textarea>
+              <textarea class="form-textarea" id="booking-notes" rows="4" placeholder="Describe your symptoms…" style="resize:vertical"></textarea>
             </div>
           </div>
 
-          <!-- Summary -->
           <div class="card" id="booking-summary" style="display:none;border:2px solid var(--teal)">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
               <div style="width:36px;height:36px;background:var(--teal);border-radius:10px;display:flex;align-items:center;justify-content:center">
-                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18">
-                  <path d="M20 6L9 17l-5-5"/>
-                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="18" height="18"><path d="M20 6L9 17l-5-5"/></svg>
               </div>
               <div class="card-title">Booking Summary</div>
             </div>
             <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
-              <div style="display:flex;justify-content:space-between">
-                <span style="color:var(--slate)">Doctor</span>
-                <strong id="summary-doctor"></strong>
-              </div>
-              <div style="display:flex;justify-content:space-between">
-                <span style="color:var(--slate)">Specialty</span>
-                <span id="summary-specialty"></span>
-              </div>
-              <div style="display:flex;justify-content:space-between">
-                <span style="color:var(--slate)">Date</span>
-                <strong id="summary-date"></strong>
-              </div>
-              <div style="display:flex;justify-content:space-between">
-                <span style="color:var(--slate)">Time</span>
-                <strong id="summary-time" style="color:var(--teal)"></strong>
-              </div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--slate)">Doctor</span><strong id="summary-doctor"></strong></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--slate)">Specialty</span><span id="summary-specialty"></span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--slate)">Date</span><strong id="summary-date"></strong></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:var(--slate)">Time</span><strong id="summary-time" style="color:var(--teal)"></strong></div>
             </div>
-            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:20px" onclick="confirmBooking()">
+            <button class="btn btn-primary" id="confirm-booking-btn" style="width:100%;justify-content:center;margin-top:20px" onclick="confirmBooking()">
               Confirm Booking
             </button>
           </div>
 
           <div class="card" style="background:var(--teal-pale);border:none">
-            <p style="font-size:13px;color:var(--teal);font-weight:600;margin-bottom:6px">📌 How it works</p>
+            <p style="font-size:13px;color:var(--teal);font-weight:600;margin-bottom:8px">📌 How it works</p>
             <ol style="padding-left:18px;font-size:13px;color:var(--slate);display:flex;flex-direction:column;gap:6px">
               <li>Select a date on the calendar</li>
               <li>Pick an available time slot</li>
@@ -388,27 +254,19 @@
           </div>
         </div>
       </div>
-    </div><!-- /booking -->
+    </div>
 
-
-    <!-- ═══ PAGE: APPOINTMENTS ═══ -->
+    <!-- ═══ APPOINTMENTS ═══ -->
     <div id="page-appointments" class="page" style="display:none">
       <div class="topbar">
-        <div class="topbar-left">
-          <h1>My Appointments</h1>
-          <p>View and manage all your appointments</p>
-        </div>
+        <div class="topbar-left"><h1>My Appointments</h1><p>View and manage all your appointments</p></div>
         <div class="topbar-right">
           <button class="btn btn-primary" onclick="showPage('booking')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             New Booking
           </button>
         </div>
       </div>
-
-      <!-- Filters -->
       <div style="margin-bottom:20px">
         <div class="tabs">
           <button class="tab-btn appt-tab active" data-filter="all">All</button>
@@ -418,52 +276,52 @@
           <button class="tab-btn appt-tab" data-filter="cancelled">Cancelled</button>
         </div>
       </div>
-
       <div id="appointments-list"></div>
-    </div><!-- /appointments -->
+    </div>
 
-
-    <!-- ═══ PAGE: PROFILE (placeholder) ═══ -->
+    <!-- ═══ PROFILE ═══ -->
     <div id="page-profile" class="page" style="display:none">
       <div class="topbar">
-        <div class="topbar-left">
-          <h1>My Profile</h1>
-          <p>Manage your personal and health information</p>
-        </div>
+        <div class="topbar-left"><h1>My Profile</h1><p>Manage your personal and health information</p></div>
       </div>
-      <div style="display:grid;grid-template-columns:300px 1fr;gap:22px">
-        <div class="card" style="text-align:center;padding:32px">
-          <div class="user-avatar" style="width:72px;height:72px;font-size:24px;margin:0 auto 16px">MJM</div>
-          <h2 style="font-family:var(--font-display);font-size:20px">Musalika James Miyutu</h2>
-          <p style="color:var(--teal);font-size:13px;font-weight:600;margin:4px 0 14px">Patient</p>
-          <p style="color:var(--slate);font-size:13px">musalika.miyutu@email.com</p>
-          <button class="btn btn-secondary btn-sm" style="margin-top:16px;justify-content:center;width:100%">Edit Photo</button>
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:22px">
+        <div class="card" style="text-align:center;padding:32px;align-self:start">
+          <div class="user-avatar" id="profile-avatar" style="width:72px;height:72px;font-size:24px;margin:0 auto 16px">?</div>
+          <h2 id="profile-name-display" style="font-family:var(--font-display);font-size:18px;margin-bottom:4px"></h2>
+          <p id="profile-email-display" style="color:var(--slate);font-size:13px"></p>
+          <span class="badge badge-teal" style="margin-top:10px">Patient</span>
         </div>
         <div class="card">
           <div class="card-title" style="margin-bottom:20px">Personal Information</div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">First Name</label><input class="form-input" value="Musalika" /></div>
-            <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" value="Miyutu" /></div>
+            <div class="form-group"><label class="form-label">First Name</label><input class="form-input" id="profile-firstname" /></div>
+            <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" id="profile-lastname" /></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="musalika.miyutu@email.com" /></div>
-            <div class="form-group"><label class="form-label">Phone</label><input class="form-input" value="+260 977 123 456" /></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="profile-email" disabled style="opacity:0.6" /></div>
+            <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="profile-phone" placeholder="+260 977 000 000" /></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" value="1998-04-15" /></div>
-            <div class="form-group"><label class="form-label">Blood Type</label>
-              <select class="form-select"><option>O+</option><option>A+</option><option>B+</option><option>AB+</option></select>
+            <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" id="profile-dob" /></div>
+            <div class="form-group">
+              <label class="form-label">Blood Type</label>
+              <select class="form-select" id="profile-blood">
+                <option value="">Unknown</option>
+                <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+              </select>
             </div>
           </div>
-          <div class="form-group"><label class="form-label">Allergies / Medical Notes</label>
-            <textarea class="form-textarea" rows="3" placeholder="e.g. Penicillin allergy, asthma…"></textarea>
+          <div class="form-group">
+            <label class="form-label">Allergies / Medical Notes</label>
+            <textarea class="form-textarea" id="profile-notes" rows="3" placeholder="e.g. Penicillin allergy, asthma…"></textarea>
           </div>
-          <button class="btn btn-primary" onclick="showToast('Profile saved successfully','success')">Save Changes</button>
+          <button class="btn btn-primary" id="save-profile-btn" onclick="saveProfile()">Save Changes</button>
         </div>
       </div>
-    </div><!-- /profile -->
+    </div>
 
-    <!-- ═══ PAGE: SETTINGS (placeholder) ═══ -->
+    <!-- ═══ SETTINGS ═══ -->
     <div id="page-settings" class="page" style="display:none">
       <div class="topbar">
         <div class="topbar-left"><h1>Settings</h1><p>Manage your account preferences</p></div>
@@ -472,24 +330,15 @@
         <div class="card-title" style="margin-bottom:20px">Notifications</div>
         <div style="display:flex;flex-direction:column;gap:16px">
           <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
-            <div>
-              <strong style="font-size:14px">Email Reminders</strong>
-              <p style="font-size:13px;color:var(--slate)">Appointment confirmations and reminders</p>
-            </div>
+            <div><strong style="font-size:14px">Email Reminders</strong><p style="font-size:13px;color:var(--slate)">Appointment confirmations and reminders</p></div>
             <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--teal)" />
           </label>
           <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
-            <div>
-              <strong style="font-size:14px">SMS Alerts</strong>
-              <p style="font-size:13px;color:var(--slate)">Get texts 24 hours before your appointment</p>
-            </div>
+            <div><strong style="font-size:14px">SMS Alerts</strong><p style="font-size:13px;color:var(--slate)">24 hours before your appointment</p></div>
             <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--teal)" />
           </label>
           <label style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
-            <div>
-              <strong style="font-size:14px">Cancellation Alerts</strong>
-              <p style="font-size:13px;color:var(--slate)">Notify me if an appointment is cancelled</p>
-            </div>
+            <div><strong style="font-size:14px">Cancellation Alerts</strong><p style="font-size:13px;color:var(--slate)">Notify me if an appointment is cancelled</p></div>
             <input type="checkbox" style="width:18px;height:18px;accent-color:var(--teal)" />
           </label>
         </div>
@@ -497,12 +346,12 @@
           <button class="btn btn-primary" onclick="showToast('Settings saved','success')">Save Settings</button>
         </div>
       </div>
-    </div><!-- /settings -->
+    </div>
 
-  </main><!-- /main-content -->
-</div><!-- /app-shell -->
+  </main>
+</div>
 
-<!-- ═══ MODALS ═══ -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modal-appointment-detail">
   <div class="modal">
     <div class="modal-header">
@@ -516,39 +365,19 @@
   </div>
 </div>
 
-<!-- Toast Container -->
 <div id="toast-container"></div>
 
-<!-- Scripts -->
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- App scripts -->
+<script src="js/supabase.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/db.js"></script>
 <script src="js/app.js"></script>
 <script src="js/dashboard.js"></script>
 <script src="js/doctors.js"></script>
 <script src="js/booking.js"></script>
 <script src="js/appointments.js"></script>
-
-<script>
-  // Page visibility toggling
-  const origShow = showPage;
-  window.showPage = function(id) {
-    document.querySelectorAll('.page').forEach(p => {
-      p.style.display = 'none';
-      p.classList.remove('active');
-    });
-    const page = document.getElementById('page-' + id);
-    if (page) { page.style.display = 'block'; page.classList.add('active'); }
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const nav = document.querySelector(`[data-page="${id}"]`);
-    if (nav) nav.classList.add('active');
-    App.currentPage = id;
-    if (id === 'doctors') renderDoctors();
-    if (id === 'appointments') renderAppointments();
-    if (id === 'booking') initBooking();
-    if (id === 'dashboard') renderDashboard();
-  }
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-    showPage('dashboard');
-  });
-</script>
+<script src="js/profile.js"></script>
 </body>
 </html>
